@@ -26,7 +26,7 @@ include $(CIRCLEHOME)/Rules.mk
 
 OBJS	= dmasoundbuffers.o hdmisoundbasedevice.o i2ssoundbasedevice.o \
 	  pwmsoundbasedevice.o pwmsounddevice.o soundbasedevice.o \
-	  pcm512xsoundcontroller.o wm8960soundcontroller.o
+	  pcm512xsoundcontroller.o wm8960soundcontroller.o wm8731soundcontroller.o
 
 ifeq ($(strip $(RASPPI)),4)
 OBJS	+= usbsoundbasedevice.o usbsoundcontroller.o

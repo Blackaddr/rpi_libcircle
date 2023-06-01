@@ -32,6 +32,7 @@
 #include <circle/bcm2835int.h>
 #include <circle/memio.h>
 #include <circle/timer.h>
+#include <circle/globsystem.h>
 #include <assert.h>
 
 #define CHANS			2			// 2 I2S stereo channels
@@ -106,8 +107,10 @@ CI2SSoundBaseDevice::CI2SSoundBaseDevice (CInterruptSystem *pInterrupt,
 	m_bControllerInited (FALSE),
 	m_pController (nullptr)
 {
+	LogScreen("CI2SSoundBaseDevice() entered\n");
 	assert (m_nChunkSize >= 32);
 	assert ((m_nChunkSize & 1) == 0);
+
 
 	// start clock and I2S device
 	if (!m_bSlave)
@@ -420,28 +423,43 @@ unsigned CI2SSoundBaseDevice::RXCompletedHandler (boolean bStatus, u32 *pBuffer,
 
 #include <circle/sound/pcm512xsoundcontroller.h>
 #include <circle/sound/wm8960soundcontroller.h>
+#include <circle/sound/wm8731soundcontroller.h>
 
 boolean CI2SSoundBaseDevice::ControllerFactory (void)
 {
+	LogScreen("CI2SSoundBaseDevice::ControllerFactory() entered\n");
 	if (!m_pI2CMaster)
 	{
 		return TRUE;
 	}
 
-	// PCM512x
-	m_pController = new CPCM512xSoundController (m_pI2CMaster, m_ucI2CAddress);
-	assert (m_pController);
+	// // PCM512x
+	// m_pController = new CPCM512xSoundController (m_pI2CMaster, m_ucI2CAddress);
+	// assert (m_pController);
 
-	if (m_pController->Probe ())
-	{
-		return TRUE;
-	}
+	// if (m_pController->Probe ())
+	// {
+	// 	return TRUE;
+	// }
 
-	delete m_pController;
-	m_pController = nullptr;
+	// delete m_pController;
+	// m_pController = nullptr;
 
-	// WM8960
-	m_pController = new CWM8960SoundController (m_pI2CMaster, m_ucI2CAddress);
+	// // WM8960
+	// m_pController = new CWM8960SoundController (m_pI2CMaster, m_ucI2CAddress);
+	// assert (m_pController);
+
+	// if (m_pController->Probe ())
+	// {
+	// 	return TRUE;
+	// }
+
+	// delete m_pController;
+	// m_pController = nullptr;
+
+	// WM8731
+	LogScreen("Creating CWM8731SoundController\n");
+	m_pController = new CWM8731SoundController (m_pI2CMaster, m_ucI2CAddress);
 	assert (m_pController);
 
 	if (m_pController->Probe ())

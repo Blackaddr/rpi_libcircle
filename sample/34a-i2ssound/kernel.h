@@ -32,7 +32,7 @@
 #include <circle/sched/scheduler.h>
 #include <circle/i2cmaster.h>
 #include <circle/usb/usbhcidevice.h>
-#include <circle/sound/soundbasedevice.h>
+#include <circle/sound/i2ssoundbasedevice.h>
 #include <circle/sound/wm8731soundcontroller.h>
 #include <circle/types.h>
 
@@ -69,7 +69,7 @@ private:
 	CUSBHCIDevice		m_USBHCI;
 
 	CWM8731SoundController  m_Codec;
-	CSoundBaseDevice*       m_pSound;
+	CI2SSoundBaseDevice*       m_pSound;
 
 };
 

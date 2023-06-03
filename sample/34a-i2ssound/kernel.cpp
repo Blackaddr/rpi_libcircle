@@ -105,6 +105,11 @@ boolean CKernel::Initialize (void)
 	return bOK;
 }
 
+void rxIsr(void *param)
+{
+	LogScreen("RX ISR called\n");
+}
+
 TShutdownMode CKernel::Run (void)
 {
 	m_Logger.Write (FromKernel, LogNotice, "Compile time: " __DATE__ " " __TIME__);
@@ -118,6 +123,8 @@ TShutdownMode CKernel::Run (void)
 						nullptr, DAC_I2C_ADDRESS, CI2SSoundBaseDevice::DeviceModeTXRX);
 	assert (m_pSound != 0);
 
+	m_pSound->RegisterSecondaryRxHandler(rxIsr, nullptr);
+
 	// configure sound device
 	if (!m_pSound->AllocateQueue (QUEUE_SIZE_MSECS))
 	{
@@ -129,7 +136,6 @@ TShutdownMode CKernel::Run (void)
 		m_Logger.Write (FromKernel, LogPanic, "Cannot allocate input sound queue");
 		LogScreen("Cannot allocate input sound queue\n");
 	}
-
 	m_pSound->SetWriteFormat (FORMAT, WRITE_CHANNELS);
 	m_pSound->SetReadFormat (FORMAT, WRITE_CHANNELS);
 

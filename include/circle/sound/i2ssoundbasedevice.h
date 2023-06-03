@@ -3,7 +3,7 @@
 //
 // Circle - A C++ bare metal environment for Raspberry Pi
 // Copyright (C) 2014-2022  R. Stange <rsta2@o2online.de>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -78,6 +78,18 @@ public:
 	/// \return Pointer to sound controller object or nullptr, if not supported.
 	CSoundController *GetController (void) override;
 
+
+    typedef void SecondaryHandler (void* pParam);
+	void RegisterSecondaryRxHandler(SecondaryHandler *pRxHandler, void *pRxParam = 0) {
+		m_pSecondaryRxHandler      = pRxHandler;
+		m_pSecondaryRxHandlerParam = pRxParam;
+	}
+
+	void RegisterSecondaryTxHandler(SecondaryHandler *pTxHandler, void *pTxParam = 0) {
+		m_pSecondaryTxHandler      = pTxHandler;
+		m_pSecondaryTxHandlerParam = pTxParam;
+	}
+
 protected:
 	/// \brief May overload this to provide the sound samples!
 	/// \param pBuffer	buffer where the samples have to be placed
@@ -125,6 +137,12 @@ private:
 
 	boolean m_bControllerInited;
 	CSoundController *m_pController;
+
+	SecondaryHandler* m_pSecondaryRxHandler      = nullptr;
+	void*             m_pSecondaryRxHandlerParam = nullptr;
+	SecondaryHandler* m_pSecondaryTxHandler      = nullptr;
+	void*             m_pSecondaryTxHandlerParam = nullptr;
+
 };
 
 #endif

@@ -8,7 +8,7 @@
 
 // Logger
 #define LogScreenMsg(Msg, MsgLength) do { if (g_ScreenPtr) g_ScreenPtr->Write(Msg, MsgLength); } while(0)
-#define LogScreen(Msg) do { if (g_ScreenPtr) { CString msg; msg.Format(Msg); g_ScreenPtr->Write(msg, msg.GetLength());} } while(0)
+#define LogScreen(...) do { if (g_ScreenPtr) { CString msg; msg.Format(__VA_ARGS__); g_ScreenPtr->Write(msg, msg.GetLength());} } while(0)
 #define LogSerial(Source, Severity, Msg) do { if (g_LoggerPtr) g_LoggerPtr->Write(Source, Severity, Msg); } while(0)
 
 extern CLogger*       g_LoggerPtr;

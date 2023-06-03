@@ -107,7 +107,6 @@ CI2SSoundBaseDevice::CI2SSoundBaseDevice (CInterruptSystem *pInterrupt,
 	m_bControllerInited (FALSE),
 	m_pController (nullptr)
 {
-	LogScreen("CI2SSoundBaseDevice() entered\n");
 	assert (m_nChunkSize >= 32);
 	assert ((m_nChunkSize & 1) == 0);
 
@@ -400,7 +399,11 @@ unsigned CI2SSoundBaseDevice::TXCompletedHandler (boolean bStatus, u32 *pBuffer,
 		return 0;
 	}
 
-	return pThis->GetChunk (pBuffer, nChunkSize);
+    unsigned retVal = pThis->GetChunk (pBuffer, nChunkSize);
+
+	if (pThis->m_pSecondaryTxHandler) { pThis->m_pSecondaryTxHandler(pThis->m_pSecondaryTxHandlerParam); }
+
+	return retVal;
 }
 
 unsigned CI2SSoundBaseDevice::RXCompletedHandler (boolean bStatus, u32 *pBuffer,
@@ -418,6 +421,8 @@ unsigned CI2SSoundBaseDevice::RXCompletedHandler (boolean bStatus, u32 *pBuffer,
 
 	pThis->PutChunk (pBuffer, nChunkSize);
 
+	if (pThis->m_pSecondaryRxHandler) { pThis->m_pSecondaryRxHandler(pThis->m_pSecondaryRxHandlerParam); }
+
 	return 0;
 }
 
@@ -427,7 +432,6 @@ unsigned CI2SSoundBaseDevice::RXCompletedHandler (boolean bStatus, u32 *pBuffer,
 
 boolean CI2SSoundBaseDevice::ControllerFactory (void)
 {
-	LogScreen("CI2SSoundBaseDevice::ControllerFactory() entered\n");
 	if (!m_pI2CMaster)
 	{
 		return TRUE;
@@ -458,7 +462,6 @@ boolean CI2SSoundBaseDevice::ControllerFactory (void)
 	// m_pController = nullptr;
 
 	// WM8731
-	LogScreen("Creating CWM8731SoundController\n");
 	m_pController = new CWM8731SoundController (m_pI2CMaster, m_ucI2CAddress);
 	assert (m_pController);
 

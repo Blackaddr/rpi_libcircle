@@ -26,6 +26,7 @@
 #include <circle/machineinfo.h>
 #include <circle/util.h>
 #include <assert.h>
+#include <circle/globsystem.h>
 
 #ifdef USE_VCHIQ_SOUND
 	#include <vc4/sound/vchiqsoundbasedevice.h>
@@ -66,6 +67,9 @@ CKernel::CKernel (void)
 	m_VFO (&m_LFO)		// LFO modulates the VFO
 {
 	m_ActLED.Blink (5);	// show we are alive
+	g_LoggerPtr       = &m_Logger;
+	g_ScreenPtr       = &m_Screen;
+	g_interruptSysPtr = &m_Interrupt;
 }
 
 CKernel::~CKernel (void)
@@ -130,6 +134,7 @@ boolean CKernel::Initialize (void)
 TShutdownMode CKernel::Run (void)
 {
 	m_Logger.Write (FromKernel, LogNotice, "Compile time: " __DATE__ " " __TIME__);
+	LogScreen("Compile time: " __DATE__ " " __TIME__ "\n");
 
 	// select the sound device
 	const char *pSoundDevice = m_Options.GetSoundDevice ();
@@ -139,7 +144,8 @@ TShutdownMode CKernel::Run (void)
 	}
 	else if (strcmp (pSoundDevice, "sndi2s") == 0)
 	{
-		m_pSound = new CI2SSoundBaseDevice (&m_Interrupt, SAMPLE_RATE, CHUNK_SIZE, FALSE,
+		LogScreen("Using I2S sound with slave peripheral (codec is master)\n");
+		m_pSound = new CI2SSoundBaseDevice (&m_Interrupt, SAMPLE_RATE, CHUNK_SIZE, TRUE,
 						    &m_I2CMaster, DAC_I2C_ADDRESS);
 	}
 	else if (strcmp (pSoundDevice, "sndhdmi") == 0)
@@ -175,6 +181,7 @@ TShutdownMode CKernel::Run (void)
 	if (!m_pSound->AllocateQueue (QUEUE_SIZE_MSECS))
 	{
 		m_Logger.Write (FromKernel, LogPanic, "Cannot allocate sound queue");
+		LogScreen("Cannot allocate sound queue\n");
 	}
 
 	m_pSound->SetWriteFormat (FORMAT, WRITE_CHANNELS);
@@ -188,9 +195,11 @@ TShutdownMode CKernel::Run (void)
 	if (!m_pSound->Start ())
 	{
 		m_Logger.Write (FromKernel, LogPanic, "Cannot start sound device");
+		LogScreen("Cannot start sound device\n");
 	}
 
-	m_Logger.Write (FromKernel, LogNotice, "Playing modulated 440 Hz tone");
+	m_Logger.Write (FromKernel, LogNotice, "Playing modulated 440 Hz tone\n");
+	LogScreen("Playing modulated 440 Hz tone\n");
 
 	// output sound data
 	for (unsigned nCount = 0; m_pSound->IsActive (); nCount++)
@@ -223,6 +232,7 @@ void CKernel::WriteSoundData (unsigned nFrames)
 		if (nResult != (int) nWriteBytes)
 		{
 			m_Logger.Write (FromKernel, LogError, "Sound data dropped");
+			LogScreen("Sound data dropped\n");
 		}
 
 		nFrames -= nWriteFrames;

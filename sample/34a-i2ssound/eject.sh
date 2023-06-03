@@ -1,0 +1,1 @@
+sudo eject /dev/sdd

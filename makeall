@@ -47,6 +47,14 @@ cd ..
 
 cd ..
 
+cd addon/SDCard
+$make $1 $2 || exit
+cd ../..
+
+cd addon/tftpfileserver
+$make $1 $2 || exit
+cd ../..
+
 if [[ $makesample == true ]]
 then
 	cd sample

@@ -31,6 +31,8 @@
 #include <circle/types.h>
 #include <circle/globsystem.h>
 
+#define delay(x) do { CTimer::Get()->MsDelay(x);} while(0)
+
 CWM8731SoundController::CWM8731SoundController (CI2CMaster *pI2CMaster, u8 uchI2CAddress)
 :	m_pI2CMaster (pI2CMaster),
 	m_uchI2CAddress (uchI2CAddress)

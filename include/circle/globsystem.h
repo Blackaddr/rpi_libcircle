@@ -18,6 +18,7 @@ extern CScreenDevice* g_ScreenPtr;
 extern CInterruptSystem* g_interruptSysPtr;
 
 // Timer
-#define delay(x) do { CTimer::Get()->MsDelay(x);} while(0)
+//#define delay(x) do { CTimer::Get()->MsDelay(x);} while(0)
+//void delay(unsigned x) { CTimer::Get()->MsDelay(x); }
 
 #endif

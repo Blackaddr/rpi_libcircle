@@ -29,15 +29,17 @@
 #include <circle/timer.h>
 #include <circle/logger.h>
 #include <circle/types.h>
-#include <circle/globsystem.h>
 
 #define delay(x) do { CTimer::Get()->MsDelay(x);} while(0)
+
+static CLogger* loggerPtr = nullptr;
 
 CWM8731SoundController::CWM8731SoundController (CI2CMaster *pI2CMaster, u8 uchI2CAddress)
 :	m_pI2CMaster (pI2CMaster),
 	m_uchI2CAddress (uchI2CAddress)
 {
     resetInternalReg();
+	loggerPtr = CLogger::Get();
 }
 
 boolean CWM8731SoundController::Probe (void)
@@ -212,7 +214,6 @@ void CWM8731SoundController::resetInternalReg(void) {
 // Powerdown and disable the codec
 void CWM8731SoundController::disable(void)
 {
-	LogScreen("Disabling codec\n");
 	// if (m_wireStarted == false) {
 	//     Wire.begin();
 	//     m_wireStarted = true;
@@ -238,7 +239,6 @@ void CWM8731SoundController::disable(void)
 
 // 	disable(); // disable first in case it was already powered up
 
-// 	LogScreen("Enabling codec\n");
 // 	// if (m_wireStarted == false) {
 // 	//     Wire.begin();
 // 	//     m_wireStarted = true;
@@ -477,9 +477,8 @@ bool CWM8731SoundController::write(unsigned int reg, unsigned int val)
 		int result = m_pI2CMaster->Write (WM8731_I2C_ADDR, buffer, 2);
 		if (result != 2) {
 			// retry
-			CString msg;
-			msg.Format("CWM8731SoundController::write(): could not write 2 bytes, only wrote %d\n", result);
-			LogScreenMsg(msg, msg.GetLength());
+			//CString msg;
+			//msg.Format("CWM8731SoundController::write(): could not write 2 bytes, only wrote %d\n", result);
 		} else {
 			done = true;
 		}
@@ -495,7 +494,7 @@ void CWM8731SoundController::enable(void)
     disable(); // disable first in case it was already powered up
 
     // if (Serial) { Serial.println("Enabling codec"); }
-	LogScreen("Enabling codec in master mode\n");
+	//LogScreen("Enabling codec in master mode\n");
     // if (m_wireStarted == false) {
     //     Wire.begin();
     //     m_wireStarted = true;

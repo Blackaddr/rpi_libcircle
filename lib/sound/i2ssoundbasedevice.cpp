@@ -32,7 +32,6 @@
 #include <circle/bcm2835int.h>
 #include <circle/memio.h>
 #include <circle/timer.h>
-#include <circle/globsystem.h>
 #include <assert.h>
 
 #define CHANS			2			// 2 I2S stereo channels

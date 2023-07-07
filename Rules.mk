@@ -3,7 +3,7 @@
 #
 # Circle - A C++ bare metal environment for Raspberry Pi
 # Copyright (C) 2014-2023  R. Stange <rsta2@o2online.de>
-# 
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -160,7 +160,7 @@ STANDARD ?= -std=c++14 -Wno-aligned-new
 INCLUDE	+= -I $(CIRCLEHOME)/include -I $(CIRCLEHOME)/addon -I $(CIRCLEHOME)/app/lib \
 	   -I $(CIRCLEHOME)/addon/vc4 -I $(CIRCLEHOME)/addon/vc4/interface/khronos/include
 DEFINE	+= -D__circle__=$(CIRCLEVER) -DRASPPI=$(RASPPI) -DSTDLIB_SUPPORT=$(STDLIB_SUPPORT) \
-	   -D__VCCOREVER__=0x04000000 -U__unix__ -U__linux__ #-DNDEBUG
+	   -D__VCCOREVER__=0x04000000 -U__unix__ -U__linux__ -DNDEBUG
 
 AFLAGS	+= $(ARCH) $(DEFINE) $(INCLUDE) $(OPTIMIZE)
 CFLAGS	+= $(ARCH) -Wall -fsigned-char -ffreestanding -g \
@@ -244,12 +244,12 @@ $(TARGET).hex: $(TARGET).img
 	@echo "  COPY  $(TARGET).hex"
 	@$(OBJCOPY) $(TARGET).elf -O ihex $(TARGET).hex
 
-# Command line to run node and python.  
+# Command line to run node and python.
 # Including the '.exe' forces WSL to run the Windows host version
-# of these commands.  If putty and node are available on the windows 
+# of these commands.  If putty and node are available on the windows
 # machine we can get around WSL's lack of serial port support
 ifeq ($(strip $(WSL_DISTRO_NAME)),)
-NODE=node 
+NODE=node
 PUTTY=putty
 PUTTYSERIALPORT=$(SERIALPORT)
 else

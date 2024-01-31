@@ -68,6 +68,8 @@ public:
 	/// \param pMessage Format string of the log message (arguments follow)
 	void Write (const char *pSource, TLogSeverity Severity, const char *pMessage, ...);
 
+	void WriteRaw(const char *pMessage, ...);
+
 	/// \param pSource  Module name of the originator of the log message
 	/// \param Severity Severity of the log message
 	/// \param pMessage Format string of the log message

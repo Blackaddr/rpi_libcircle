@@ -97,6 +97,11 @@ void CLogger::SetNewTarget (CDevice *pTarget)
 	m_pTarget = pTarget;
 }
 
+void CLogger::WriteRaw(const char *pMessage, ...)
+{
+	Write (pMessage);
+}
+
 void CLogger::Write (const char *pSource, TLogSeverity Severity, const char *pMessage, ...)
 {
 	va_list var;
